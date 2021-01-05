@@ -21,7 +21,7 @@ print("Waiting for connection from client")
 
 #Theread client
 def threaded_client(connection)
-	print("Conenction establish \n"
+	print("Conenction establish \n")
 	#process
 
 
