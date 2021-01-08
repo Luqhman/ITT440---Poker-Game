@@ -47,9 +47,8 @@ def fmenu():
 
 def random():
 	print("This is the options")
-	print("[1] Call")
-	print("[2] Check")
-	print("[2] Fold")
+	print("[1] Raise")
+	print("[2] Stand")
 	print("[0] Back to menu")
 	while True:
 		sel = input("Enter your choice")
@@ -62,8 +61,6 @@ def random():
 			s.send(sel.encode())
                         msg = s.recv(36)
                         print("Current amount : %s" % msg.decode('utf-8'))
-		elif sel == '3':
-			fmenu()
 		elif sel == '0':
 			sys.exit()
 		else:
