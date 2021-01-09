@@ -53,14 +53,16 @@ def random():
 	while True:
 		sel = input("Enter your choice")
 		if sel == '1':
+			input("Amount :")
 			s.send(sel.encode())
 			msg = s.recv(36)
-			input("Amount :")
 			print("Current amount : " % msg.decode('utf-8'))
+			print("Player Card :" + player1_cards.append())
 		elif sel == '2':
 			s.send(sel.encode())
                         msg = s.recv(36)
                         print("Current amount : %s" % msg.decode('utf-8'))
+			print("Player Card :" + player1_cards.append())
 		elif sel == '0':
 			sys.exit()
 		else:
