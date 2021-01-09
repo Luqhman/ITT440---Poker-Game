@@ -32,14 +32,12 @@ playerID1 = 1
 #Front page function
 def fmenu():
 	print("-------------------------------Welcome To Poker Game--------------------------------")
+	input("Enter Your Name :")
 	print("|1| Start Game")
-	print("|0| Exit")
 	while True:
 		pick = input("Enter your choice:")
 		if pick == '1':
 			poker()
-		elif pick == '0':
-			break
 		else:
 			print("invalid choice")
 			fmenu()
