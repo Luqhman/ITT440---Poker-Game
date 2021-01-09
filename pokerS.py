@@ -2,8 +2,10 @@
 from random import choice
 import sys
 import socket
-from multiprocessing import Process
 from _thread import *
+import itertools
+import re
+import json
 #create a socket object
 s= socket.socket()
 
@@ -66,6 +68,8 @@ def getPoint(cardStrength,player_point):
 			point = 11
 		else:
 			point = 1
+	elif re.search("^2",cardStrength):
+		point = 2
 	elif re.search("^3",cardStrength):
 		point = 3
 	elif re.search("^4",cardStrength):
@@ -95,36 +99,19 @@ def getPoint(cardStrength,player_point):
 	return point
 
 #Theread client
-def threaded_client(connection)
+def threaded_client(connection):
 	print("Conenction establish \n")
 	while True:
-		loop = 0
-		while loop == 0
-			#Assign player card
-			assignPlayer1Card(len(player1_cards,pcount))
-			assignPlayer2Card(len(player2_cards,pcount))
-			assignDealerCard()
-			print(player1_cards)
-			print(player2_cards)
-			print(dealer_cards)
-			print(len(cards))
-		#accept data from client
-		sel = connection.recv(1024).decode('utf-8')
-		#chech whetheir input form player 1 or player 2
-		#if P1==P1
-			if hit == 1:
-				pcount+=1
-				print("Player 1 add a card")
-				assignPlayer1Card(len(player1_cards),pcount)
-				loop = 1
-			print(player1_cards)
-		#elif P2==P2
-			if hit == 2:
-				pcount+=1
-				print("Player 2 add a card"
-				assignPlayer2Card(len(player2_cards,pcount)
-				loop = 2
-			print(player2_cards)
+		#Assign player card and dumps json into element
+		card_player1 = json.dumps(assignPLayer1Card(len(player1_cards,pcount)))
+		card_player2 = json.dumps(assignPlayer2Card(len(player2_cards,pcount)))
+		card_dealer = json.dumps(assignDealerCard())
+
+		#Send and convert to json
+		connection.sendall(card_player1.encode('utf-8'))
+		connection.sendall(card_player2.encode('utf-8'))
+		connection.sendall(card_dealer.encode('utf-8'))
+
 		#Calculate player and dealer point
 		for i in range(len(player1_cards)):
 			player1_point = getPoint(player1_cards[i],player1_point)
@@ -137,11 +124,8 @@ def threaded_client(connection)
 		print("Player 1 point:"+str(player1_point))
 		print("Player 2 point:"+str(player2_point))
 		print("Dealer  point:"+str(dealer_point))
-		p1 = player1_point
 		connection.send(str(p1).encode())
-		p2 = player2_point
                 connection.send(str(p2).encode())
-		D = dealer_point
                 connection.send(str(D).encode())
 	connection.close()
 
