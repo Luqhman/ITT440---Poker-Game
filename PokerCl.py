@@ -45,17 +45,16 @@ def fmenu():
 
 def random():
 	print("This is the options")
-	print("[1] Raise")
-	print("[2] Stand")
+	print("[1] Hit")
+	print("[2] Check")
 	print("[0] Back to menu")
 	while True:
 		sel = input("Enter your choice")
 		if sel == '1':
-			input("Amount :")
 			s.send(sel.encode())
 			msg = s.recv(36)
 			print("Current amount : " % msg.decode('utf-8'))
-			print("Player Card :" + player1_cards.append())
+			print("Player Card :" + (player1_cards.append()+1))
 		elif sel == '2':
 			s.send(sel.encode())
                         msg = s.recv(36)
