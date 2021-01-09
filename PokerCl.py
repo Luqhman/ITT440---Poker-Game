@@ -26,35 +26,55 @@ bet = 100
 pc = 1
 check = 0
 hit = 0
-playerID = 1
-playerID1 = 1
 pcount = 0
 ppoint = 0
-
+player_name = ""
 
 #Front page function
 def fmenu():
 	print("-------------------------------Welcome To Poker Game--------------------------------")
-	input("Enter Your Name :")
+	player_name = input("Enter Your Name :")
+	playerID = input("Enter Player 1 or 2 :")
 	print("|1| Start Game")
-	while True:
-		pick = input("Enter your choice:")
-		if pick == '1':
-			player_bet = input("Input amount to bet :")
-			player1_money = int(player_bet)
-			card = ClientSocket.recv(1024).decode('utf-8')
-			a=card[2:7]
-			b=card[11:16]
-			c=card[20:25]
-			d=card[29:34]
-			print(a)
-			print(b)
-			print(c)
-			print(d)
-		else:
-			print("invalid choice")
-			fmenu()
-	sys.exit()
+	if playerID = 1:
+		while True:
+			pick = input("Enter your choice:")
+			if pick == '1':
+				player_bet = input("Input amount to bet :")
+				player1_money = player1_money-int(player_bet)
+				card = ClientSocket.recv(1024).decode('utf-8')
+				a=card[2:7]
+				b=card[11:16]
+				c=card[20:25]
+				d=card[29:34]
+				print(a)
+				print(b)
+				print(c)
+				print(d)
+			else:
+				print("invalid choice")
+				fmenu()
+		sys.exit()
+	elif playerID = 2:
+		while True:
+                        pick = input("Enter your choice:")
+                        if pick == '1':
+                                player_bet = input("Input amount to bet :")
+                                player1_money = player1_money-int(player_bet)
+                                card = ClientSocket.recv(1024).decode('utf-8')
+                                a=card[2:7]
+                                b=card[11:16]
+                                c=card[20:25]
+                                d=card[29:34]
+                                print(a)
+                                print(b)
+                                print(c)
+                                print(d)
+                        else:
+                                print("invalid choice")
+                                fmenu()
+		sys.exit()
+
 
 def random():
 	print("This is the options")
