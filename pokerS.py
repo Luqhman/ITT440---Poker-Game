@@ -7,7 +7,7 @@ import itertools
 import re
 import json
 #create a socket object
-s= socket.socket()
+s = socket.socket()
 
 #get local machine name
 host = socket.gethostname()
@@ -25,7 +25,7 @@ print("Waiting for connection from client")
 cards=["Aclub","Adiam","Ahear","Aspad","2club","2diam","2hear","2spad","3club","3diam",\
 	"3hear","3spad","4club","4diam","4hear","4spad","5club","5diam","5hear","5spad","6club",\
 	"6diam","6hear","6spad","7club","7diam","7hear","7spad","8club","8diam","8hear","8spad",\
-	"9club","9diam","9hear","9spad","10clu","10dia","10hea","10spa","Jclub","Jdiam",\
+	"9club","9diam","9hear","9spad","0club","0diam","0hear","0spad","Jclub","Jdiam",\
 	"Jhear","Jspad","Qclub","Qdiam","Qhear","Qspad","Kclub","Kdiam","Khear","Kspad"]
 dealer_cards = []
 dealer_point = 0
@@ -112,6 +112,10 @@ def threaded_client(connection):
 		connection.sendall(card_player2.encode('utf-8'))
 		connection.sendall(card_dealer.encode('utf-8'))
 
+		#debug
+		print(card_player1)
+		print(card_player2)
+		print(card_dealer)
 
 
 		#Calculate player and dealer point
