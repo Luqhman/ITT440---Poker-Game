@@ -1,20 +1,21 @@
 import string, math, random
 import socket
 import sys
+import json
 import time
 from time import sleep
 
-s = socket.socket()
+ClientSocket = socket.socket()
 
 host = ""
 
 port = 8888
 
-print(f"Connecting to {host}:{port}")
-
-s.connect((host, port))
-print("connected")
-time.sleep(1)
+print('Waiting for connection')
+try:
+    ClientSocket.connect((host, port))
+except socket.error as e:
+    print(str(e))
 
 player1_money = 1000
 player2_money = 1000
@@ -27,6 +28,8 @@ check = 0
 hit = 0
 playerID = 1
 playerID1 = 1
+pcount = 0
+ppoint = 0
 
 
 #Front page function
@@ -37,7 +40,17 @@ def fmenu():
 	while True:
 		pick = input("Enter your choice:")
 		if pick == '1':
-			poker()
+			player_bet = input("Input amount to bet :")
+			player1_money = int(player_bet)
+			card = ClientSocket.recv(1024).decode('utf-8')
+			a=card[2:7]
+			b=card[11:16]
+			c=card[20:25]
+			d=card[29:34]
+			print(a)
+			print(b)
+			print(c)
+			print(d)
 		else:
 			print("invalid choice")
 			fmenu()
@@ -51,15 +64,16 @@ def random():
 	while True:
 		sel = input("Enter your choice")
 		if sel == '1':
-			s.send(sel.encode())
-			msg = s.recv(36)
-			print("Current amount : " % msg.decode('utf-8'))
+			print("Current amount : " + str(player1_money))
 			print("Player Card :" + (player1_cards.append()+1))
-		elif sel == '2':
+			pcount += 1
 			s.send(sel.encode())
+		elif sel == '2':
                         msg = s.recv(36)
-                        print("Current amount : %s" % msg.decode('utf-8'))
+                        print("Current amount : " str(player1_money))
 			print("Player Card :" + player1_cards.append())
+			pcount += 1
+			s.send(sel.encode())
 		elif sel == '0':
 			sys.exit()
 		else:
@@ -67,37 +81,16 @@ def random():
 
 
 
-#Player raise function
-def betRaise(bet,player_money):
-	player_bet = input("Enter amount to raise : (must be more than {bet}) ")
-	player_money -= int(player_bet)
-	bet = bet + int(player_bet)
-	print("Player bet : " + player_bet)
-	return bet, player_money
-
-	#asking a player to raise or hold
-	if playerID == playerID1:
-		bet, player1_money = betRaise(bet,player1_money)
-	else:
-		print("Not your turn!")
-
-
-
-	playerInput = input("Enter 1 to hit and 0 to check : ")
-	print(playerInput)
-
-	#if raise pc = 0, if hold pc = 1
-	if int(playerInput) == 1:
-		hit = 1
-		#send data to server
-	elif int(playerInput) == 0:
-		check += 1
-		#send data to server
-
-
-	#display for debugging purpose
-	print("Player money : " + str(player1_money))
-	print("Bet now : " + str(bet))
-
+#Player if won the round
+def playerWon():
+	msg = s.recv(36)
+	print("Player Point :" + msg.decode('utf-8'))
+	while True :
+		if (ppoint1>ppoint2):
+			print("You Won")
+			player1_money += player2_money
+		else:
+			print("You Lose")
+			player1_money -= player1_money
 
 fmenu()
