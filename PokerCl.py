@@ -68,10 +68,6 @@ def random():
 
 
 
-
-fmenu()
-
-
 #Player raise function
 def betRaise(bet,player_money):
 	player_bet = input("Enter amount to raise : (must be more than {bet}) ")
@@ -80,26 +76,29 @@ def betRaise(bet,player_money):
 	print("Player bet : " + player_bet)
 	return bet, player_money
 
-#asking a player to raise or hold
-if playerID == playerID1:
-	bet, player1_money = betRaise(bet,player1_money)
-else:
-	print("Not your turn!")
+	#asking a player to raise or hold
+	if playerID == playerID1:
+		bet, player1_money = betRaise(bet,player1_money)
+	else:
+		print("Not your turn!")
 
 
 
-playerInput = input("Enter 1 to hit and 0 to check : ")
-print(playerInput)
+	playerInput = input("Enter 1 to hit and 0 to check : ")
+	print(playerInput)
 
-#if raise pc = 0, if hold pc = 1
-if int(playerInput) == 1:
-	hit = 1
-	#send data to server
-elif int(playerInput) == 0:
-	check += 1
-	#send data to server
+	#if raise pc = 0, if hold pc = 1
+	if int(playerInput) == 1:
+		hit = 1
+		#send data to server
+	elif int(playerInput) == 0:
+		check += 1
+		#send data to server
 
 
-#display for debugging purpose
-print("Player money : " + str(player1_money))
-print("Bet now : " + str(bet))
+	#display for debugging purpose
+	print("Player money : " + str(player1_money))
+	print("Bet now : " + str(bet))
+
+
+fmenu()
