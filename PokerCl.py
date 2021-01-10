@@ -65,13 +65,15 @@ def assignPlayerCard():
 def receive_server_data():
 	global playerID
 	player_point = 0
-	totalPoint = 0
 	for i in range(hitDisplay):
-		totalPoint = totalPoint + getPoint(player_cards[i],player_point)
+		player_point = getPoint(player_cards[i],player_point)
+
+	check = 1
 
 	msg = {
 	"player id": playerID,
-	"player point": totalPoint
+	"player point": player_point,
+	"check": check
 	}
 
 	data = pickle.dumps(msg)
@@ -80,6 +82,7 @@ def receive_server_data():
 	server_data = ClientSocket.recv(1024).decode("utf")
 	print(server_data)
 	messagebox.showinfo("Congratulation!!!",server_data)
+
 
 
 #Point function
@@ -197,7 +200,6 @@ def table():
 	global player_cards
 	global hitDisplay
 	new_pick = []
-	player_cards = []
 	table = Toplevel()
 	table.title("Poker Table")
 	table.geometry("800x1000")
