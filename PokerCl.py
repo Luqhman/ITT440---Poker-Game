@@ -11,6 +11,7 @@ import string,math,random
 import socket
 import json
 import time
+from random import choice
 
 
 ClientSocket = socket.socket()
@@ -25,9 +26,15 @@ try:
 except socket.error as e:
 	print(str(e))
 
-player_cards = []
 
-bet = 100
+
+#initializing variable
+cards=["Aclub","Adiam","Ahear","Aspad","2club","2diam","2hear","2spad","3club","3diam",\
+	"3hear","3spad","4club","4diam","4hear","4spad","5club","5diam","5hear","5spad","6club",\
+	"6diam","6hear","6spad","7club","7diam","7hear","7spad","8club","8diam","8hear","8spad",\
+	"9club","9diam","9hear","9spad","0club","0diam","0hear","0spad","Jclub","Jdiam",\
+	"Jhear","Jspad","Qclub","Qdiam","Qhear","Qspad","Kclub","Kdiam","Khear","Kspad"]
+
 
 
 HEIGHT = 1000
@@ -36,50 +43,82 @@ root = tk.Tk()
 root.title("Poker Game")
 root.configure(bg='#477148')
 photo = []
-hit1Display = 1
-hit2Display = 1
+hitDisplay = 2
+pcount = 4
+player_cards = []
+point = 0
+
+#assign player cards
+def assignPlayerCard():
+	global player_card
+	global pcount
+	for i in range(len(player_cards),pcount):
+		random_cards = choice(cards)
+		player_cards.append(random_cards)
+		cards.remove(random_cards)
 
 
 
 
-#Player if won the round
-def playerWon():
-	msg = s.recv(36)
-	print("Player Point :" + msg.decode('utf-8'))
-	while True :
-		if (ppoint1>ppoint2):
-			print("You Won")
-			player1_money += player2_money
+
+#receive data from server
+def receive_server_data():
+	global playerID
+	player_point = 0
+	totalPoint = 0
+	for i in range(hitDisplay):
+		totalPoint = totalPoint + getPoint(player_cards[i],player_point)
+
+	msg = {
+	"player id": playerID,
+	"player point": totalPoint
+	}
+
+	data = pickle.dumps(msg)
+	ClientSocket.sendall(data)
+
+	server_data = ClientSocket.recv(1024).decode("utf")
+	print(server_data)
+	messagebox.showinfo("Congratulation!!!",server_data)
+
+
+#Point function
+def getPoint(cardStrength,player_point):
+	global point
+	if re.search("^A",cardStrength):
+		if player_point + 11<=21:
+			point = 11
 		else:
-			print("You Lose")
-			player1_money -= player1_money
+			point = 1
+	elif re.search("^2",cardStrength):
+		point = 2
+	elif re.search("^3",cardStrength):
+		point = 3
+	elif re.search("^4",cardStrength):
+		point = 4
+	elif re.search("^5",cardStrength):
+		point = 5
+	elif re.search("^6",cardStrength):
+		point = 6
+	elif re.search("^7",cardStrength):
+		point = 7
+	elif re.search("^8",cardStrength):
+		point = 8
+	elif re.search("^9",cardStrength):
+		point = 9
+	elif re.search("^10",cardStrength):
+		point = 10
+	elif re.search("^J",cardStrength):
+		point = 10
+	elif re.search("^Q",cardStrength):
+		point = 10
+	elif re.search("^K",cardStrength):
+		point = 10
+	else:
+		print("Cannot calculate point")
 
-#Player raise bet
-def betRaise(player_bet):
-	global player1_money
-	global player2_money
-	global bet
-	global hit1Display
-	global hit2Display
-	if playerID == player1_ID:
-		player1_money = player1_money - (int(player_bet))
-		bet = bet + (int(player_bet))
-		hit1Display += 1
-		labelamount['text'] = player1_money
-		jsonAgain = {"playerID":playerID,"player bet":player_bet,"hit":hit,"check":check}
-	elif playerID == player2_ID:
-		player2_money = player2_money - (int(player_bet))
-		bet = bet + (int(player_bet))
-		hit2Display += 1
-		labelamount['text'] = player2_money
-		jsonAgain = {"playerID":playerID,"player bet":player_bet,"hit":hit,"check":check}
-	hit = 1
-	check = 0
-	print(hit)
-	print(bet)
-	data = pickle.dumps(jsonAgain)
-	ClientSocket.sendall(bytes(data))
-
+	point = point + player_point
+	return point
 
 
 #display card rank
@@ -94,16 +133,17 @@ def displayCards2(player_cards):
 		image3 = "Hearts.png"
 	return image3
 
-#player check
-def playerCheck():
-	global player1_money
-	hit = 0
-	check = 1
-	player_bet = 0
-	labelamount['text'] = player1_money
-	jsonAgain = {"playerID":playerID,"player bet":player_bet,"hit":hit,"check":check}
-	data = pickle.dumps(jsonAgain)
-	ClientSocket.sendall(bytes(data))
+
+def playerHit():
+	global hitDisplay
+	hitDisplay = hitDisplay + 1
+	table()
+	if hitDisplay >= 5:
+		receive_server_data()
+
+def closeConnection():
+	ClientSocket.close()
+
 
 #display card number
 def displayCards(player_cards):
@@ -150,35 +190,19 @@ def displayCards(player_cards):
 		photo.append(image + " of " + image2)
 	return photo
 
+
 def table():
-
 	#global background_image
-
 	global new_pick
-	global new_pick2
-	global hi1tDisplay
-	global hit2Display
-	global playerID
-	global player1_ID
-	global player2_ID
-
+	global player_cards
+	global hitDisplay
 	new_pick = []
-	new_pick2 = []
-
+	player_cards = []
 	table = Toplevel()
 	table.title("Poker Table")
 	table.geometry("800x1000")
 	table.configure(bg='#477148')
-
-	if player_turn % 2 == 0:
-		messagebox.showinfo("","Player 1 turn(Please Wait)")
-	elif player_turn % 2 != 0:
-		messagebox.showinfo("","Player 2 turn(Please Wait)")
-
-	if playerID == player1_ID:
-		hit2Display = 2
-	elif playerID == player2_ID:
-		hit1Display = 2
+	assignPlayerCard()
 
 	#background image
 	#background_image = tk.PhotoImage(file='background.png')
@@ -208,11 +232,11 @@ def table():
 	entrytable.place(relx=0.5,rely=0.20,relwidth=0.25,relheight=0.1)
 
 	#buttonhit
-	button = tk.Button(frame1, text="HIT", font=40, command=lambda: betRaise(entrytable.get()))
+	button = tk.Button(frame1, text="HIT", font=40, command=playerHit)
 	button.place(relx=0.45, rely=0.40, relwidth=0.1, relheight=0.1)
 
 	#buttonstand
-	button = tk.Button(frame1, text="Check", font=40, command=playerCheck)
+	button = tk.Button(frame1, text="Check", font=40, command=receive_server_data)
 	button.place(relx=0.45, rely=0.55, relwidth=0.1, relheight=0.1)
 
 	#frame2
@@ -223,38 +247,38 @@ def table():
 	labelfirst = tk.Label(frame2, text="FIRST PLAYER", bg='green', fg='white')
 	labelfirst.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
 
+	print(player_cards)
 
-	photo = displayCards(player1_cards)
+	photo = displayCards(player_cards)
 	for i in range(len(photo)):
 		card_pick = Image.open("cards/" + photo[i])
 		resized = card_pick.resize((50,90),Image.ANTIALIAS)
 		if i == 0:
-			if not (hit1Display >= 1):
-				card_pick = Image.open("cards/default.png" )
+			if not (hitDisplay >= 1):
+				card_pick = Image.open("cards/default.png")
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
-				labelamount['text'] = player1_money
 			new_pick.append(ImageTk.PhotoImage(resized))
 			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='blue')
 			labelframe2.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 1:
-			if not (hit1Display >= 2):
-				card_pick = Image.open("cards/default.png" )
+			if not (hitDisplay >= 2):
+				card_pick = Image.open("cards/default.png")
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
 			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='white')
 			labelframe2.place(relx=0.3,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 2:
-			if not (hit1Display >= 3):
-				card_pick = Image.open("cards/default.png" )
+			if not (hitDisplay >= 3):
+				card_pick = Image.open("cards/default.png")
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
 			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='red')
 			labelframe2.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 3:
-			if not (hit1Display >= 4):
-				card_pick = Image.open("cards/default.png" )
+			if not (hitDisplay >= 4):
+				card_pick = Image.open("cards/default.png")
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
@@ -264,113 +288,10 @@ def table():
 			pass
 
 
-	#frame3
-	frame3 = tk.Frame(table, bg='green')
-	frame3.place(relx=0.1, rely=0.48, relwidth=0.8, relheight=0.3)
-	#labeldealer
-	labelsecond = tk.Label(frame3, text="SECOND PLAYER", bg='green', fg='white')
-	labelsecond.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
-
-	photo = displayCards(player2_cards)
-	for i in range(len(player1_cards),len(photo)):
-		card_pick = Image.open("cards/" + photo[i])
-		resized = card_pick.resize((50,90),Image.ANTIALIAS)
-		if i == 4:
-			if not (hit2Display >= 1):
-				card_pick = Image.open("cards/default.png" )
-				resized = card_pick.resize((50,90),Image.ANTIALIAS)
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe3 = tk.Label(frame3, image=new_pick[i], bg='white')
-			labelframe3.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 5:
-			if not (hit2Display >= 2):
-				card_pick = Image.open("cards/default.png" )
-				resized = card_pick.resize((50,90),Image.ANTIALIAS)
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe3 = tk.Label(frame3, image=new_pick[i], bg='blue')
-			labelframe3.place(relx=0.3,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 6:
-			if not (hit2Display >= 3):
-				card_pick = Image.open("cards/default.png" )
-				resized = card_pick.resize((50,90),Image.ANTIALIAS)
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe3 = tk.Label(frame3, image=new_pick[i], bg='white')
-			labelframe3.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 7 :
-			if not (hit2Display >= 4):
-				card_pick = Image.open("cards/default.png" )
-				resized = card_pick.resize((50,90),Image.ANTIALIAS)
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe3 = tk.Label(frame3, image=new_pick[i], bg='red')
-			labelframe3.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
-
-	#frame4
-	frame4 = tk.Frame(table, bg='black')
-	frame4.place(relx=0.1, rely=0.74, relwidth=0.8, relheight=0.3)
-	#labeldealer
-	labelsecond = tk.Label(frame4, text="DEALER", bg='green', fg='white')
-	labelsecond.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
-
-	photo = displayCards(dealer_cards)
-	for i in range(len(player1_cards)+len(player2_cards),len(photo)):
-		card_pick = Image.open("cards/" + photo[i])
-		resized = card_pick.resize((50,90),Image.ANTIALIAS)
-		if i == 8 and hitDisplay >= 1:
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe4 = tk.Label(frame4, image=new_pick[i], bg='blue')
-			labelframe4.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 9 and hitDisplay >= 2:
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe4 = tk.Label(frame4, image=new_pick[i], bg='white')
-			labelframe4.place(relx=0.3,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 10 and hitDisplay >= 3:
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe4 = tk.Label(frame4, image=new_pick[i], bg='red')
-			labelframe4.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
-		elif i == 11 and hitDisplay >= 4:
-			new_pick.append(ImageTk.PhotoImage(resized))
-			#label
-			labelframe4 = tk.Label(frame4, image=new_pick[i], bg='white')
-			labelframe4.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
-
 
 
 #main start
-data = ClientSocket.recv(36).decode('utf-8')
-player1_cards = eval(data)
-print(player1_cards)
-data2= ClientSocket.recv(36).decode('utf-8')
-player2_cards = eval(data2)
-print(player2_cards)
-data3 = ClientSocket.recv(36).decode('utf-8')
-dealer_cards = eval(data3)
-print(dealer_cards)
-data4 = ClientSocket.recv(1000)
-data5 = pickle.loads(data4)
-print(type(data5))
-player1_money = data5["player1 money"]
-player2_money = data5["player2 money"]
-player1_ID = data5["player1ID"]
-player2_ID = data5["player2ID"]
-hit = data5["hit"]
-check = data5["check"]
-player_turn = data5["player turn"]
-print(player1_money)
-print(player2_money)
-print(hit)
-print(check)
-print(player_turn)
 playerID = 0
-
-
-
 
 #canvas size
 canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
@@ -413,6 +334,9 @@ button.place(relx=0.37,rely=0.70,relwidth=0.25,relheight=0.1)
 #button start
 button = tk.Button(framemenu, text = "Start",command=table, font=40,)
 button.place(relx=0.37,rely=0.80,relwidth=0.25,relheight=0.1)
+
+
+
 
 
 
