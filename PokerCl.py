@@ -47,6 +47,7 @@ hitDisplay = 2
 pcount = 4
 player_cards = []
 point = 0
+new_pick1 = []
 
 #assign player cards
 def assignPlayerCard():
@@ -138,10 +139,26 @@ def displayCards2(player_cards):
 
 def playerHit():
 	global hitDisplay
+	global photo
+	global new_pick1
+
 	hitDisplay = hitDisplay + 1
-	table()
 	if hitDisplay >= 5:
 		receive_server_data()
+
+	else:
+		card_pick = Image.open("cards/" + photo[hitDisplay-1])
+		resized = card_pick.resize((50,90),Image.ANTIALIAS)
+		if hitDisplay ==3:
+			new_pick1.append(ImageTk.PhotoImage(resized))
+			labelframe2 = tk.Label(frame2, image=new_pick1[0], bg='#477148')
+			labelframe2.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
+		elif hitDisplay ==4:
+			new_pick1.append(ImageTk.PhotoImage(resized))
+			labelframe2 = tk.Label(frame2, image=new_pick1[1], bg='#477148')
+			labelframe2.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
+			button1.config(state=tk.DISABLED)
+
 
 def closeConnection():
 	ClientSocket.close()
@@ -233,15 +250,15 @@ def table():
 	#entry nametable
 	#entrytable = tk.Entry(frame1, font=40)
 	#entrytable.place(relx=0.5,rely=0.20,relwidth=0.25,relheight=0.1)
-
+	global button1
 	#buttonhit
-	button = tk.Button(frame1, text="HIT", font=40, command=playerHit)
-	button.place(relx=0.25, rely=0.55, relwidth=0.1, relheight=0.1)
+	button1 = tk.Button(frame1, text="HIT", font=40, command=playerHit)
+	button1.place(relx=0.25, rely=0.55, relwidth=0.1, relheight=0.1)
 
 	#buttonstand
 	button = tk.Button(frame1, text="Check", font=40, command=receive_server_data)
 	button.place(relx=0.65, rely=0.55, relwidth=0.1, relheight=0.1)
-
+	global frame2
 	#frame2
 	frame2 = tk.Frame(table, bg='white')
 	frame2.place(relx=0.1, rely=0.22, relwidth=0.8, relheight=0.3)
@@ -251,7 +268,7 @@ def table():
 	labelfirst.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
 
 	print(player_cards)
-
+	global labelframe2
 	photo = displayCards(player_cards)
 	for i in range(len(photo)):
 		card_pick = Image.open("cards/" + photo[i])
@@ -294,6 +311,7 @@ def table():
 
 
 #main start
+
 playerID = 0
 
 #canvas size
@@ -338,8 +356,6 @@ button.place(relx=0.37,rely=0.60,relwidth=0.25,relheight=0.1)
 #button start
 button = tk.Button(framemenu, text = "Start",command=table, font=40,)
 button.place(relx=0.37,rely=0.80,relwidth=0.25,relheight=0.1)
-
-
 
 
 
