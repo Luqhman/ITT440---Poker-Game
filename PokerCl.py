@@ -108,7 +108,7 @@ def getPoint(cardStrength,player_point):
 		point = 8
 	elif re.search("\A9",cardStrength):
 		point = 9
-	elif re.search("\A10",cardStrength):
+	elif re.search("\A0",cardStrength):
 		point = 10
 	elif re.search("\AJ",cardStrength):
 		point = 10

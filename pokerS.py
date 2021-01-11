@@ -27,13 +27,18 @@ print("Waiting for connection from client")
 
 clients = []
 player_data = []
-
+client_ID = ""
+clients_ID = []
 
 #Theread client
 def threaded_client(connection):
 	print("Conenction establish \n")
-	global clients,player_data
+	global clients,player_data,client_name
 	ptotal = 0
+
+	client_ID = connection.recv(1024).decode("utf-8")
+    clients_ID.append(client_ID)
+
 	while True:
 
 
