@@ -37,8 +37,8 @@ cards=["Aclub","Adiam","Ahear","Aspad","2club","2diam","2hear","2spad","3club","
 
 
 
-HEIGHT = 1000
-WIDTH = 800
+HEIGHT = 800
+WIDTH = 1000
 root = tk.Tk()
 root.title("Poker Game")
 root.configure(bg='#477148')
@@ -84,38 +84,37 @@ def receive_server_data():
 	messagebox.showinfo("Congratulation!!!",server_data)
 
 
-
 #Point function
 def getPoint(cardStrength,player_point):
 	global point
-	if re.search("^A",cardStrength):
+	if re.search("\AA",cardStrength):
 		if player_point + 11<=21:
 			point = 11
 		else:
 			point = 1
-	elif re.search("^2",cardStrength):
+	elif re.search("\A2",cardStrength):
 		point = 2
-	elif re.search("^3",cardStrength):
+	elif re.search("\A3",cardStrength):
 		point = 3
-	elif re.search("^4",cardStrength):
+	elif re.search("\A4",cardStrength):
 		point = 4
-	elif re.search("^5",cardStrength):
+	elif re.search("\A5",cardStrength):
 		point = 5
-	elif re.search("^6",cardStrength):
+	elif re.search("\A6",cardStrength):
 		point = 6
-	elif re.search("^7",cardStrength):
+	elif re.search("\A7",cardStrength):
 		point = 7
-	elif re.search("^8",cardStrength):
+	elif re.search("\A8",cardStrength):
 		point = 8
-	elif re.search("^9",cardStrength):
+	elif re.search("\A9",cardStrength):
 		point = 9
-	elif re.search("^10",cardStrength):
+	elif re.search("\A10",cardStrength):
 		point = 10
-	elif re.search("^J",cardStrength):
+	elif re.search("\AJ",cardStrength):
 		point = 10
-	elif re.search("^Q",cardStrength):
+	elif re.search("\AQ",cardStrength):
 		point = 10
-	elif re.search("^K",cardStrength):
+	elif re.search("\AK",cardStrength):
 		point = 10
 	else:
 		print("Cannot calculate point")
@@ -202,8 +201,10 @@ def table():
 	new_pick = []
 	table = Toplevel()
 	table.title("Poker Table")
-	table.geometry("800x1000")
+	table.geometry("1000x800")
 	table.configure(bg='#477148')
+
+
 	assignPlayerCard()
 
 	#background image
@@ -212,41 +213,41 @@ def table():
 	#background_label.place(x=0,y=0,relwidth=1,relheight=1)
 
 	#frame1
-	frame1 = tk.Frame(table, bg='blue')
+	frame1 = tk.Frame(table, bg='#477148')
 	frame1.place(relx=0.1, rely=0.01, relwidth=0.8, relheight=0.3)
 
 	#labeldealer
-	labelchoice = tk.Label(frame1, text="Player money : ", bg='green', fg='white')
-	labelchoice.place(relx=0.05, rely=0.10, relwidth=0.40, relheight=0.06)
+	#labelchoice = tk.Label(frame1, text="Player money : ", bg='green', fg='white')
+	#labelchoice.place(relx=0.05, rely=0.10, relwidth=0.40, relheight=0.06)
 
 	global labelamount
 
 	#labeldealer
-	labelamount = tk.Label(frame1) #AMOUNT MONEY HERE
-	labelamount.place(relx=0.5, rely=0.10, relwidth=0.40, relheight=0.06)
+	#labelamount = tk.Label(frame1) #AMOUNT MONEY HERE
+	#labelamount.place(relx=0.5, rely=0.10, relwidth=0.40, relheight=0.06)
 
 	#labeldealer
-	labelhit = tk.Label(frame1, text="ENTER AMOUNT TO HIT", bg='green', fg='white')
-	labelhit.place(relx=0.05, rely=0.20, relwidth=0.40, relheight=0.06)
+	#labelhit = tk.Label(frame1, text="ENTER AMOUNT TO HIT", bg='green', fg='white')
+	#labelhit.place(relx=0.05, rely=0.20, relwidth=0.40, relheight=0.06)
 
 	#entry nametable
-	entrytable = tk.Entry(frame1, font=40)
-	entrytable.place(relx=0.5,rely=0.20,relwidth=0.25,relheight=0.1)
+	#entrytable = tk.Entry(frame1, font=40)
+	#entrytable.place(relx=0.5,rely=0.20,relwidth=0.25,relheight=0.1)
 
 	#buttonhit
 	button = tk.Button(frame1, text="HIT", font=40, command=playerHit)
-	button.place(relx=0.45, rely=0.40, relwidth=0.1, relheight=0.1)
+	button.place(relx=0.25, rely=0.55, relwidth=0.1, relheight=0.1)
 
 	#buttonstand
 	button = tk.Button(frame1, text="Check", font=40, command=receive_server_data)
-	button.place(relx=0.45, rely=0.55, relwidth=0.1, relheight=0.1)
+	button.place(relx=0.65, rely=0.55, relwidth=0.1, relheight=0.1)
 
 	#frame2
-	frame2 = tk.Frame(table, bg='yellow')
+	frame2 = tk.Frame(table, bg='white')
 	frame2.place(relx=0.1, rely=0.22, relwidth=0.8, relheight=0.3)
 
 	#labeldealer
-	labelfirst = tk.Label(frame2, text="FIRST PLAYER", bg='green', fg='white')
+	labelfirst = tk.Label(frame2, text="FIRST PLAYER", bg='#477148', fg='white')
 	labelfirst.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
 
 	print(player_cards)
@@ -260,7 +261,7 @@ def table():
 				card_pick = Image.open("cards/default.png")
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
-			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='blue')
+			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
 			labelframe2.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 1:
 			if not (hitDisplay >= 2):
@@ -268,7 +269,7 @@ def table():
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
-			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='white')
+			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
 			labelframe2.place(relx=0.3,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 2:
 			if not (hitDisplay >= 3):
@@ -276,7 +277,7 @@ def table():
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
-			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='red')
+			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
 			labelframe2.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
 		elif i == 3:
 			if not (hitDisplay >= 4):
@@ -284,7 +285,7 @@ def table():
 				resized = card_pick.resize((50,90),Image.ANTIALIAS)
 			new_pick.append(ImageTk.PhotoImage(resized))
 			#label
-			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='white')
+			labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
 			labelframe2.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
 		else:
 			pass
@@ -300,9 +301,9 @@ canvas = tk.Canvas(root, height=HEIGHT, width=WIDTH)
 canvas.pack()
 
 #background image
-#background_image = tk.PhotoImage(file='background.png')
-#background_label = tk.Label(root, image=background_image)
-#background_label.place(x=0,y=0,relwidth=1,relheight=1)
+background_image = tk.PhotoImage(file='cards/background.png')
+background_label = tk.Label(root, image=background_image)
+background_label.place(x=0,y=0,relwidth=1,relheight=1)
 
 #framemenu
 framemenu = tk.Frame(root, bg='#477148', bd=5)
@@ -322,15 +323,16 @@ labelenter1.place(relx=0.3,rely=0.30,relwidth=0.40,relheight=0.06)
 
 #entry name1
 entrymenu = tk.Entry(framemenu, font=40)
-entrymenu.place(relx=0.37,rely=0.60,relwidth=0.25,relheight=0.1)
+entrymenu.place(relx=0.37,rely=0.40,relwidth=0.25,relheight=0.1)
 
 def enterPlayerID(entry):
 	global playerID
 	playerID = entrymenu.get()
+	ClientSocket.send(playerID.encode("utf-8"))
 	messagebox.showinfo("ID accepted","Welcome Player " + playerID)
 
 button = tk.Button(framemenu, text = "ID",command=lambda: enterPlayerID(entrymenu.get()) , font=40,)
-button.place(relx=0.37,rely=0.70,relwidth=0.25,relheight=0.1)
+button.place(relx=0.37,rely=0.60,relwidth=0.25,relheight=0.1)
 
 
 #button start
