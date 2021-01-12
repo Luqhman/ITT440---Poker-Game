@@ -37,7 +37,7 @@ def threaded_client(connection):
 	ptotal = 0
 
 	client_ID = connection.recv(1024).decode("utf-8")
-    clients_ID.append(client_ID)
+	clients_ID.append(client_ID)
 
 	while True:
 
@@ -83,7 +83,7 @@ def threaded_client(connection):
 				else:
 					player_data[0].get("socket").send(b"Nice you win")
 					player_data[1].get("socket").send(b"Sorry you lose")
-
+			player_data =[]
 
 	connection.close()
 
