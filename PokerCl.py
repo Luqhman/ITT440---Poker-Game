@@ -37,11 +37,12 @@ cards=["Aclub","Adiam","Ahear","Aspad","2club","2diam","2hear","2spad","3club","
 
 
 
-HEIGHT = 800
-WIDTH = 1000
+HEIGHT = 720
+WIDTH = 1280
 root = tk.Tk()
 root.title("Poker Game")
 root.configure(bg='#477148')
+
 photo = []
 hitDisplay = 2
 pcount = 4
@@ -78,9 +79,16 @@ def receive_sent_server():
 	data = pickle.dumps(msg)
 	ClientSocket.sendall(data)
 
-	server_data = ClientSocket.recv(1024).decode("utf")
-	print(server_data)
-	messagebox.showinfo("Congratulation!!!",server_data)
+	server_data = ClientSocket.recv(1024)
+	server_data2 = pickle.loads(server_data)
+	messagebox.showinfo("GAME END", server_data2["text"])
+
+
+	labelPoint1 = tk.Label(table,text="PLAYER 1 POINT :" + str(server_data2["point1"]), bg="#477148", font="arial 10")
+	labelPoint1.place(relx=0.6,rely=0.06,relwidth=0.13,relheight=0.06)
+
+	labelPoint2 = tk.Label(table,text="PLAYER 2 POINT :" + str(server_data2["point2"]), bg="#477148", font="arial 10")
+	labelPoint2.place(relx=0.8,rely=0.06,relwidth=0.13,relheight=0.06)
 	play_again()
 
 
@@ -168,15 +176,15 @@ def playerHit():
 
 	else:
 		card_pick = Image.open("cards/" + photo[hitDisplay-1])
-		resized = card_pick.resize((50,90),Image.ANTIALIAS)
+		resized = card_pick.resize((150,250),Image.ANTIALIAS)
 		if hitDisplay ==3:
 			new_pick1.append(ImageTk.PhotoImage(resized))
-			labelframe2 = tk.Label(frame2, image=new_pick1[0], bg='#477148')
-			labelframe2.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
+			labelframe2 = tk.Label(table, image=new_pick1[0], bg='#477148')
+			labelframe2.place(relx=0.5,rely=0.3,relwidth=0.118,relheight=0.347)
 		elif hitDisplay ==4:
 			new_pick1.append(ImageTk.PhotoImage(resized))
-			labelframe2 = tk.Label(frame2, image=new_pick1[1], bg='#477148')
-			labelframe2.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
+			labelframe2 = tk.Label(table, image=new_pick1[1], bg='#477148')
+			labelframe2.place(relx=0.55,rely=0.3,relwidth=0.118,relheight=0.347)
 			hitbutton.config(state=tk.DISABLED)
 
 
@@ -230,9 +238,7 @@ def displayCards(player_cards):
 def displayCardsGUI():
 	global photo
 	global new_pick
-	print(len(cards))
 	assignPlayerCard()
-	print(len(cards))
 	print(player_cards)
 	photo = displayCards(player_cards)
 	print(photo)
@@ -241,31 +247,31 @@ def displayCardsGUI():
 	for i in range(len(photo)):
 		if i < 2:
 			card_pick = Image.open("cards/" + photo[i])
-			resized = card_pick.resize((50,90),Image.ANTIALIAS)
+			resized = card_pick.resize((150,250),Image.ANTIALIAS)
 			if i == 0:
 				new_pick.append(ImageTk.PhotoImage(resized))
-				labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
-				labelframe2.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
+				labelframe2 = tk.Label(table, image=new_pick[i], bg='#477148')
+				labelframe2.place(relx=0.4,rely=0.3,relwidth=0.118,relheight=0.347)
 			elif i == 1:
 				new_pick.append(ImageTk.PhotoImage(resized))
-				labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
-				labelframe2.place(relx=0.3,rely=0.2,relwidth=0.2,relheight=0.6)
+				labelframe2 = tk.Label(table, image=new_pick[i], bg='#477148')
+				labelframe2.place(relx=0.45,rely=0.3,relwidth=0.118,relheight=0.347)
 		elif i < 4:
 			card_pick = Image.open("cards/default.png")
-			resized = card_pick.resize((50,90),Image.ANTIALIAS)
+			resized = card_pick.resize((150,250),Image.ANTIALIAS)
 			if i == 2:
 				new_pick.append(ImageTk.PhotoImage(resized))
 				#label
-				labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
-				labelframe2.place(relx=0.5,rely=0.2,relwidth=0.2,relheight=0.6)
+				labelframe2 = tk.Label(table, image=new_pick[i], bg='#477148')
+				labelframe2.place(relx=0.8,rely=0.3,relwidth=0.118,relheight=0.347)
 			elif i == 3:
 				if not (hitDisplay >= 4):
 					card_pick = Image.open("cards/default.png")
-					resized = card_pick.resize((50,90),Image.ANTIALIAS)
+					resized = card_pick.resize((150,250),Image.ANTIALIAS)
 				new_pick.append(ImageTk.PhotoImage(resized))
 				#label
-				labelframe2 = tk.Label(frame2, image=new_pick[i], bg='#477148')
-				labelframe2.place(relx=0.7,rely=0.2,relwidth=0.2,relheight=0.6)
+				labelframe2 = tk.Label(table, image=new_pick[i], bg='#477148')
+				labelframe2.place(relx=0.8,rely=0.3,relwidth=0.118,relheight=0.347)
 		else:
 			pass
 		playagainbutton.config(state=tk.DISABLED)
@@ -284,48 +290,57 @@ def table():
 	new_pick = []
 	table = Toplevel()
 	table.title("Poker Table")
-	table.geometry("1000x800")
-	table.configure(bg='#477148')
+	table.geometry("1280x720")
+
+	#table.configure(bg='#477148')
+
+	#backgroun image for table
+	background_image = tk.PhotoImage(file='cards/background.png')
+	background_label = tk.Label(table, image=background_image)
+	background_label.place(x=0,y=0,relwidth=1,relheight=1)
 
 	#frame1
-	frame1 = tk.Frame(table, bg='#477148')
-	frame1.place(relx=0.1, rely=0.01, relwidth=0.8, relheight=0.3)
+	#frame1 = tk.Frame(table, bg='white')
+	#frame1.place(relx=0.1, rely=0.06, relwidth=0.8, relheight=0.2)
 
 	global labelamount
 
 	global hitbutton
 	#buttonhit
-	hitbutton = tk.Button(frame1, text="HIT", font=40, command=playerHit)
-	hitbutton.place(relx=0.25, rely=0.55, relwidth=0.1, relheight=0.1)
+	hitbutton = tk.Button(table, text="HIT", font=40, command=playerHit)
+	hitbutton.place(relx=0.1, rely=0.1, relwidth=0.1, relheight=0.1)
 	hitbutton.config(state=tk.DISABLED)
 
 	global playagainbutton
 	#play again button
-	playagainbutton = tk.Button(frame1, text="Get Card", font=40, command=lambda: [displayCardsGUI(),labelframe2.destroy()])
-	playagainbutton.place(relx=0.42, rely=0.4, relwidth=0.15, relheight=0.15)
+	playagainbutton = tk.Button(table, text="Get Card", font=40, command=displayCardsGUI)
+	playagainbutton.place(relx=0.075, rely=0.7, relwidth=0.15, relheight=0.15)
 
 	global checkbutton
 	#buttoncheck
-	checkbutton = tk.Button(frame1, text="Check", font=40, command=receive_sent_server)
-	checkbutton.place(relx=0.65, rely=0.55, relwidth=0.1, relheight=0.1)
+	checkbutton = tk.Button(table, text="Check", font=40, command=receive_sent_server)
+	checkbutton.place(relx=0.1, rely=0.23, relwidth=0.1, relheight=0.1)
 	checkbutton.config(state=tk.DISABLED)
 	global frame2
 
 	#frame2
-	frame2 = tk.Frame(table, bg='white')
-	frame2.place(relx=0.1, rely=0.22, relwidth=0.8, relheight=0.3)
+	#frame2 = tk.Frame(table, bg='#477148')
+	#frame2.place(relx=0.1, rely=0.3, relwidth=0.8, relheight=0.7)
 
-	#labelPlayer
-	labelfirst = tk.Label(frame2, text="FIRST PLAYER", bg='#477148', fg='white')
-	labelfirst.place(relx=0.3, rely=0.05, relwidth=0.40, relheight=0.06)
+	global labelPoint1
+	labelPoint1 = tk.Label(table,text="PLAYER 1 POINT :", bg="#477148", font="arial 10")
+	labelPoint1.place(relx=0.6,rely=0.06,relwidth=0.13,relheight=0.06)
+	global labelPoint2
+	labelPoint2 = tk.Label(table,text="PLAYER 2 POINT :", bg="#477148", font="arial 10")
+	labelPoint2.place(relx=0.8,rely=0.06,relwidth=0.13,relheight=0.06)
 
 	global labelframe2
 	#labelCard
 	card_pick = Image.open("cards/default.png")
-	resized = card_pick.resize((50,90),Image.ANTIALIAS)
+	resized = card_pick.resize((150,250),Image.ANTIALIAS)
 	pick = ImageTk.PhotoImage(resized)
-	labelframe2 = tk.Label(frame2, image=pick, bg='#477148')
-	labelframe2.place(relx=0.1,rely=0.2,relwidth=0.2,relheight=0.6)
+	labelframe2 = tk.Label(table, image=pick, bg='#477148')
+	labelframe2.place(relx=0.8,rely=0.3,relwidth=0.118,relheight=0.347)
 
 	table.mainloop()
 
@@ -344,38 +359,49 @@ background_label = tk.Label(root, image=background_image)
 background_label.place(x=0,y=0,relwidth=1,relheight=1)
 
 #framemenu
-framemenu = tk.Frame(root, bg='#477148', bd=5)
-framemenu.place(relx=0.1,rely=0.1,relwidth=0.8,relheight=0.5)
+#framemenu = tk.Frame(root, bg='#477148', bd=5)
+#framemenu.place(relx=0.1,rely=0.1,relwidth=0.8,relheight=0.5)
 
 #label
-labelwelcome = tk.Label(framemenu, text = "WELCOME TO POKER GAME", bg='green', fg='white')
-labelwelcome.place(relx=0.3,rely=0.20,relwidth=0.40,relheight=0.06)
-labelenter1 = tk.Label(framemenu, text = "ENTER YOUR ID", bg='green', fg='white')
-labelenter1.place(relx=0.3,rely=0.30,relwidth=0.40,relheight=0.06)
+#labelwelcome = tk.Label(root, text = "WELCOME TO BLACKJACK", bg='#477148', fg='white', font="arial 30 bold")
+#labelwelcome.place(relx=0.2,rely=0.20,relwidth=0.50,relheight=0.06)
+
+def reset(*args):
+	entrymenu.delete(0,END)
 
 #entry name1
-entrymenu = tk.Entry(framemenu, font=40)
-entrymenu.place(relx=0.37,rely=0.40,relwidth=0.25,relheight=0.1)
+entrymenu = tk.Entry(root, font=40)
+entrymenu.insert(0,"1001")
+entrymenu.bind("<Button-1>",reset)
+entrymenu.place(relx=0.37,rely=0.4,relwidth=0.25,relheight=0.05)
+
+
+
+
 
 #sent name to server
 def enterPlayerID(entry):
 	global playerID
+
 	playerID = entrymenu.get()
 	if playerID == "1001" or playerID == "1002":
 		ClientSocket.send(playerID.encode("utf-8"))
 		entrymenu.destroy()
 		button1.destroy()
-		labelname = tk.Label(framemenu, text = "Welcome to blackjack " + playerID, bg='#477148', fg='blue', font='Verdana 30 bold')
-		labelname.place(relx=0.1,rely=0.60,relwidth=0.80,relheight=0.1)
+		labelname = tk.Label(root, text = "WELCOME TO BLACKJACK PLAYER " + playerID, bg='#477148', fg='white', font='Verdana 30 bold')
+		labelname.place(relx=0.15,rely=0.3,relwidth=0.7,relheight=0.06)
+		labelname = tk.Label(root, text = "ARE YOU READY!!!! ", bg='#477148', fg='white', font='Verdana 30 bold')
+		labelname.place(relx=0.15,rely=0.36,relwidth=0.7,relheight=0.06)
+
+		button2 = tk.Button(root, text = "Start",command=table, font=40,)
+		button2.place(relx=0.37,rely=0.5,relwidth=0.25,relheight=0.1)
+		button2.config(state=tk.NORMAL)
 	else:
 		messagebox.showinfo("ERROR 101","You Enter invalid ID!")
 
 
-button1 = tk.Button(framemenu, text = "ID",command=lambda: enterPlayerID(entrymenu.get()) , font=40,)
-button1.place(relx=0.37,rely=0.60,relwidth=0.25,relheight=0.1)
-#button start
-button2 = tk.Button(framemenu, text = "Start",command=table, font=40,)
-button2.place(relx=0.37,rely=0.80,relwidth=0.25,relheight=0.1)
+button1 = tk.Button(root, text = "LOGIN",command=lambda: enterPlayerID(entrymenu.get()) , font=40,)
+button1.place(relx=0.37,rely=0.5,relwidth=0.25,relheight=0.1)
 
 
 root.mainloop()
