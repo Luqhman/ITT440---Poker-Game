@@ -109,6 +109,7 @@ def play_again():
 	print(new_pick)
 	print(new_pick1)
 	playagainbutton.config(state=tk.NORMAL)
+	table.destroy()
 	pass
 
 
@@ -287,6 +288,7 @@ def table():
 	global hitDisplay
 	global table
 
+	print(len(cards))
 	new_pick = []
 	table = Toplevel()
 	table.title("Poker Table")
@@ -307,18 +309,18 @@ def table():
 
 	global hitbutton
 	#buttonhit
-	hitbutton = tk.Button(table, text="HIT", font=40, command=playerHit)
+	hitbutton = tk.Button(table, text="HIT", font="verdana 15 bold",fg="#094E75", command=playerHit)
 	hitbutton.place(relx=0.1, rely=0.1, relwidth=0.1, relheight=0.1)
 	hitbutton.config(state=tk.DISABLED)
 
 	global playagainbutton
 	#play again button
-	playagainbutton = tk.Button(table, text="Get Card", font=40, command=displayCardsGUI)
+	playagainbutton = tk.Button(table, text="GET CARD", font="verdana 15 bold", fg="#094E75",command=displayCardsGUI)
 	playagainbutton.place(relx=0.075, rely=0.7, relwidth=0.15, relheight=0.15)
 
 	global checkbutton
 	#buttoncheck
-	checkbutton = tk.Button(table, text="Check", font=40, command=receive_sent_server)
+	checkbutton = tk.Button(table, text="Check", font="verdana 15 bold", fg="#094E75",command=receive_sent_server)
 	checkbutton.place(relx=0.1, rely=0.23, relwidth=0.1, relheight=0.1)
 	checkbutton.config(state=tk.DISABLED)
 	global frame2
@@ -358,50 +360,71 @@ background_image = tk.PhotoImage(file='cards/background.png')
 background_label = tk.Label(root, image=background_image)
 background_label.place(x=0,y=0,relwidth=1,relheight=1)
 
-#framemenu
-#framemenu = tk.Frame(root, bg='#477148', bd=5)
-#framemenu.place(relx=0.1,rely=0.1,relwidth=0.8,relheight=0.5)
-
-#label
-#labelwelcome = tk.Label(root, text = "WELCOME TO BLACKJACK", bg='#477148', fg='white', font="arial 30 bold")
-#labelwelcome.place(relx=0.2,rely=0.20,relwidth=0.50,relheight=0.06)
-
-def reset(*args):
-	entrymenu.delete(0,END)
-
-#entry name1
-entrymenu = tk.Entry(root, font=40)
-entrymenu.insert(0,"1001")
-entrymenu.bind("<Button-1>",reset)
-entrymenu.place(relx=0.37,rely=0.4,relwidth=0.25,relheight=0.05)
+login_image_open = Image.open("cards/loginBack.png")
+login_resized = login_image_open.resize((500,550),Image.ANTIALIAS)
+login_image = ImageTk.PhotoImage(login_resized)
+login_frame = tk.Label(root, image=login_image, bg='#477148')
+login_frame.place(relx=0.3,rely=0.1,relwidth=0.337,relheight=0.75)
 
 
+labeluserID = tk.Label(root, text = "BLACKJACK COMMUNITY",font=("Rockwell Condensed",15),bg="white")
+labeluserID.place(relx=0.315,rely=0.33,relwidth=0.3,relheight=0.02)
 
+labeluserID = tk.Label(root, text = "User ID",font=("Rockwell Condensed",15),bg="white")
+labeluserID.place(relx=0.345,rely=0.45,relwidth=0.05,relheight=0.02)
+
+
+#entry user ID
+entryID = tk.Entry(root, font=("Rockwell Condensed",15),borderwidth=2)
+entryID.place(relx=0.35,rely=0.5,relwidth=0.25,relheight=0.051)
 
 
 #sent name to server
 def enterPlayerID(entry):
 	global playerID
 
-	playerID = entrymenu.get()
+	playerID = entryID.get()
 	if playerID == "1001" or playerID == "1002":
 		ClientSocket.send(playerID.encode("utf-8"))
-		entrymenu.destroy()
+		login_frame.destroy()
+		labeluserID.destroy()
+		entryID.destroy()
 		button1.destroy()
-		labelname = tk.Label(root, text = "WELCOME TO BLACKJACK PLAYER " + playerID, bg='#477148', fg='white', font='Verdana 30 bold')
-		labelname.place(relx=0.15,rely=0.3,relwidth=0.7,relheight=0.06)
-		labelname = tk.Label(root, text = "ARE YOU READY!!!! ", bg='#477148', fg='white', font='Verdana 30 bold')
-		labelname.place(relx=0.15,rely=0.36,relwidth=0.7,relheight=0.06)
 
-		button2 = tk.Button(root, text = "Start",command=table, font=40,)
-		button2.place(relx=0.37,rely=0.5,relwidth=0.25,relheight=0.1)
-		button2.config(state=tk.NORMAL)
+
+		labelname = tk.Label(root, text = "WELCOME TO BLACKJACK PLAYER " + playerID,compound=tk.CENTER,image=background_image,bg='#477148', fg='white', font=("Rockwell Condensed",50))
+		labelname.place(relx=0.15,rely=0.3,relwidth=0.8,relheight=0.1)
+		labelname = tk.Label(root, text = "ARE YOU READY!!!! ", compound=tk.CENTER,bg='#477148', image=background_image,fg='white', font=("Rockwell Condensed",50))
+		labelname.place(relx=0.34,rely=0.4,relwidth=0.345,relheight=0.1)
+
+		global x
+		x = 1
+		global button2
+		button2 = tk.Button(root,command=table,text="CLICK HERE TO START", compound=tk.CENTER, bg="#0C7A11",fg="white",font=("Rockwell Condensed",30))
+		button2.place(relx=0.37,rely=0.6,relwidth=0.25,relheight=0.1)
+
+		#button blinking function
+		def label_relod():
+			global x
+			if x ==3:
+				x=1
+			if x == 1:
+				button2.config(text="")
+			elif x == 2:
+				button2.config(text="CLICK HERE TO START")
+			x += 1
+			button2.after(500,label_relod)
+		label_relod()
+
+
+
+
 	else:
 		messagebox.showinfo("ERROR 101","You Enter invalid ID!")
 
 
-button1 = tk.Button(root, text = "LOGIN",command=lambda: enterPlayerID(entrymenu.get()) , font=40,)
-button1.place(relx=0.37,rely=0.5,relwidth=0.25,relheight=0.1)
+button1 = tk.Button(root,text = "LOGIN",compound=tk.CENTER,image=background_image,command=lambda: enterPlayerID(entryID.get()) , font=("Rockwell Condensed",15),fg="white")
+button1.place(relx=0.35,rely=0.6,relwidth=0.25,relheight=0.08)
 
 
 root.mainloop()
